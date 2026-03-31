@@ -104,7 +104,7 @@ export function MessageBubble({
         )}
       >
         {isAssistant && (
-          <div className="h-12 w-12 shrink-0 rounded-full overflow-hidden">
+          <div className="hidden sm:block h-12 w-12 shrink-0 rounded-full overflow-hidden">
             <video
               src="https://res.cloudinary.com/dlhfnz7ro/video/upload/v1774943790/final_memojis_ix6rvh.webm"
               autoPlay

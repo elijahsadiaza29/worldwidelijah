@@ -51,6 +51,10 @@ export default function ChatContainer() {
 
     if (isWelcome) setLayoutState("chat");
 
+    const originalInput = text;
+    setInputValue("");
+    setIsLoading(true);
+
     const userMessage: MessageType = {
       id: Date.now().toString(),
       role: "user",
@@ -61,13 +65,12 @@ export default function ChatContainer() {
     const assistantPlaceholder: MessageType = {
       id: assistantMessageId,
       role: "assistant",
-      content: "",
+      content: "", // This triggers the ThinkingIndicator
       markdown: true,
     };
 
+    // Show messages immediately (Optimistic UI for visibility)
     setMessages((prev) => [...prev, userMessage, assistantPlaceholder]);
-    setInputValue("");
-    setIsLoading(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -105,6 +108,8 @@ export default function ChatContainer() {
       }
     } catch (error) {
       console.error("Chat Error:", error);
+      setInputValue(originalInput); // Restore input on failure
+      
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessageId

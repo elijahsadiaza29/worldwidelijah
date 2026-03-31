@@ -63,7 +63,7 @@ export function ChatInput({
       )}
     >
       {/* Top transition gradient */}
-      <div className="absolute top-[-100px] left-0 right-0 h-[100px] bg-gradient-to-t from-white to-transparent dark:from-zinc-950 pointer-events-none" />
+      <div className="absolute top-[-20px] left-0 right-0 h-[20px] bg-gradient-to-t from-white to-transparent dark:from-zinc-950 pointer-events-none" />
       {/* Bottom filler to cover padding area */}
       <div className="absolute bottom-[-100px] left-0 right-0 h-[100px] bg-background" />
       {showSuggestions && (
@@ -87,10 +87,17 @@ export function ChatInput({
           </div>
 
           {isSuggestionsVisible && (
-            <SuggestionsRow
-              onSuggestionClick={handleSuggestionClick}
-              onMoreClick={() => setIsDrawerOpen(true)}
-            />
+            <div
+              className={cn(
+                isLoading &&
+                  "opacity-50 pointer-events-none transition-opacity",
+              )}
+            >
+              <SuggestionsRow
+                onSuggestionClick={handleSuggestionClick}
+                onMoreClick={() => setIsDrawerOpen(true)}
+              />
+            </div>
           )}
         </div>
       )}
