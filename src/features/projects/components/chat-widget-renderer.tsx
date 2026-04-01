@@ -1,8 +1,8 @@
 "use client";
 
 import { MessageContent } from "@/components/ui/message";
-import ProjectCarousel from "@/features/projects/components/project-carousel";
 import ContactsWidget from "@/features/contact/components/contacts-widget";
+import ProjectCarousel from "@/features/projects/components/project-carousel";
 import SkillsWidget from "@/features/skills/components/skills-widget";
 import type { ProjectMedia } from "@/lib/getPortfolioContext";
 
@@ -31,7 +31,7 @@ type AIWidget =
 function tryParseWidget(content: string): AIWidget | null {
   try {
     // 1. Direct JSON parse attempt (cleanest case)
-    let cleaned = content
+    const cleaned = content
       .trim()
       .replace(/^```json\n?/i, "")
       .replace(/^```\n?/i, "")
@@ -66,7 +66,9 @@ function tryParseWidget(content: string): AIWidget | null {
             const nameMatch = potentialJson.match(/"name"\s*:\s*"([^"]*)"/);
 
             // Simple regex for socials array
-            const socialsMatch = potentialJson.match(/"socials"\s*:\s*(\[[\s\S]*?\])/);
+            const socialsMatch = potentialJson.match(
+              /"socials"\s*:\s*(\[[\s\S]*?\])/,
+            );
             let socials = [];
             if (socialsMatch) {
               try {
