@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { PromptInput, PromptInputTextarea } from "../ui/prompt-input";
 import { SuggestionsDrawer } from "./suggestions-drawer";
 import { SuggestionsRow } from "./suggestions-row";
+import { useRateLimit } from "@/hooks/use-rate-limit";
 
 interface ChatInputProps {
   inputValue: string;
@@ -15,6 +16,7 @@ interface ChatInputProps {
   onSend: (text: string) => void;
   showSuggestions?: boolean;
   className?: string;
+  rateLimit?: ReturnType<typeof useRateLimit>;
 }
 
 export function ChatInput({
@@ -24,6 +26,7 @@ export function ChatInput({
   onSend,
   showSuggestions = true,
   className,
+  rateLimit,
 }: ChatInputProps) {
   const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -112,7 +115,10 @@ export function ChatInput({
         isLoading={isLoading}
         value={inputValue}
         onValueChange={setInputValue}
-        onSubmit={() => onSend(inputValue)}
+        onSubmit={() => {
+          if (rateLimit?.isLimited) return;
+          onSend(inputValue);
+        }}
         className={cn(
           "flex w-full overflow-hidden rounded-[26px]",
           "bg-muted border-none",
@@ -168,7 +174,7 @@ export function ChatInput({
               <Button
                 size="icon"
                 onClick={() => onSend(inputValue)}
-                disabled={!inputValue.trim() || isLoading}
+                disabled={!inputValue.trim() || isLoading || rateLimit?.isLimited}
                 className="size-9 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-opacity"
               >
                 {!isLoading ? (
@@ -221,7 +227,7 @@ export function ChatInput({
               <Button
                 size="icon"
                 onClick={() => onSend(inputValue)}
-                disabled={!inputValue.trim() || isLoading}
+                disabled={!inputValue.trim() || isLoading || rateLimit?.isLimited}
                 className="shrink-0 self-end size-9 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-opacity"
               >
                 {!isLoading ? (
@@ -234,6 +240,32 @@ export function ChatInput({
           </>
         )}
       </PromptInput>
+
+      {/* Cursor-style Rate Limit Status UI */}
+      {rateLimit && (
+        <div className="flex items-center gap-1.5 sm:gap-3 text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium px-3 mt-1 pb-1">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span>Session: {Math.round((rateLimit.messagesLeft / rateLimit.maxMessages) * 100)}%</span>
+            <div className="h-1.5 w-16 sm:w-24 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className={cn("h-full rounded-full transition-all duration-500", rateLimit.messagesLeft <= 3 ? "bg-red-500" : "bg-blue-500")} 
+                style={{ width: `${(rateLimit.messagesLeft / rateLimit.maxMessages) * 100}%` }} 
+              />
+            </div>
+          </div>
+          
+          <div className="ml-auto flex items-center gap-3">
+            {rateLimit.resetAt && rateLimit.messagesLeft < rateLimit.maxMessages ? (
+              <span className="hidden sm:inline">
+                Reset in: {rateLimit.resetAt > Date.now() 
+                  ? `${Math.max(1, Math.ceil((rateLimit.resetAt - Date.now()) / 60000))}m` 
+                  : "Refreshing"}
+              </span>
+            ) : null}
+            <span>Messages left: {(rateLimit.messagesLeft).toFixed(1)}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

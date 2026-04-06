@@ -6,7 +6,7 @@ import ChatWidgetRenderer from "@/features/projects/components/chat-widget-rende
 import type { ProjectMedia } from "@/lib/getPortfolioContext";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Copy, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Heart } from "lucide-react";
 import {
   Message,
   MessageAction,
@@ -188,36 +188,14 @@ export function MessageBubble({
               {/* Actions — only shown when assistant has replied */}
               {!isEmpty && (
                 <MessageActions className="self-end">
-                  <MessageAction tooltip="Copy to clipboard">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full"
-                      onClick={() => {
-                        if (isString) onCopy?.(contentStr);
-                      }}
-                    >
-                      <Copy className="size-4" />
-                    </Button>
-                  </MessageAction>
-                  <MessageAction tooltip="Helpful">
+                  <MessageAction tooltip="Like">
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 rounded-full"
                       onClick={() => onLike?.(message.id, true)}
                     >
-                      <ThumbsUp className="size-4" />
-                    </Button>
-                  </MessageAction>
-                  <MessageAction tooltip="Not helpful">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full"
-                      onClick={() => onLike?.(message.id, false)}
-                    >
-                      <ThumbsDown className="size-4" />
+                      <Heart className="size-4" />
                     </Button>
                   </MessageAction>
                 </MessageActions>

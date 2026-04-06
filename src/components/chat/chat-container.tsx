@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ChatInput } from "./chat-input";
 import { ChatMessages } from "./chat-messages";
 import { WelcomeScreen } from "./welcome-screen";
+import { useRateLimit } from "@/hooks/use-rate-limit";
 
 type MessageType = {
   id: string;
@@ -23,6 +24,8 @@ export default function ChatContainer() {
   const [inputValue, setInputValue] = useState("");
   const [layoutState, setLayoutState] = useState<LayoutState>("welcome");
   const [projects, setProjects] = useState<ProjectMedia[]>([]);
+
+  const rateLimit = useRateLimit();
 
   const isWelcome = layoutState === "welcome";
 
@@ -55,6 +58,20 @@ export default function ChatContainer() {
     setInputValue("");
     setIsLoading(true);
 
+    if (rateLimit.isLimited) {
+      setTimeout(() => {
+        setMessages((prev) => [
+          ...prev, 
+          { id: Date.now().toString(), role: "user", content: text },
+          { id: (Date.now() + 1).toString(), role: "assistant", content: "I'm currently resting! You've used all your allocated demo tokens. Please wait until the timer resets." }
+        ]);
+        setIsLoading(false);
+      }, 600);
+      return;
+    }
+
+    rateLimit.incrementMessage();
+
     const userMessage: MessageType = {
       id: Date.now().toString(),
       role: "user",
@@ -85,7 +102,18 @@ export default function ChatContainer() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to fetch response");
+      if (!response.ok) {
+        const errorText = await response.text();
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? { ...m, content: errorText || "Sorry, I encountered an error. Please try again." }
+              : m,
+          ),
+        );
+        setIsLoading(false);
+        return;
+      }
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No reader available");
@@ -177,6 +205,7 @@ export default function ChatContainer() {
                     setInputValue={setInputValue}
                     isLoading={isLoading}
                     onSend={handleSend}
+                    rateLimit={rateLimit}
                   />
                 </motion.div>
               </div>
@@ -204,6 +233,7 @@ export default function ChatContainer() {
                   setInputValue={setInputValue}
                   isLoading={isLoading}
                   onSend={handleSend}
+                  rateLimit={rateLimit}
                 />
               </motion.div>
             </div>
