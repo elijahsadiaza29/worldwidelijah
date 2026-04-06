@@ -13,8 +13,7 @@ const notion = new Client({ auth: process.env.NOTION_TOKEN });
 let cache: { prompt: string; fetchedAt: number } | null = null;
 let mediaCache: { data: PortfolioMedia; fetchedAt: number } | null = null;
 
-const CACHE_TTL =
-  process.env.NODE_ENV === "development" ? 10 * 1000 : 5 * 60 * 1000;
+const CACHE_TTL = 1 * 1000; // 1 second for real-time with minimal overhead
 
 export function clearPortfolioCache() {
   cache = null;
@@ -136,59 +135,61 @@ export async function getPortfolioMedia(
     if (!currentProject) continue;
 
     // ── Profile photo ──
-    if (/^profile photo:/i.test(text)) {
-      media.profilePhoto =
-        extractUrl(block, "profile photo") ??
-        text.replace(/^profile photo:\s*/i, "").trim();
+    if (/^\W*profile photo:/i.test(text)) {
+      const parsed = extractUrl(block, "profile photo") ??
+        text.replace(/^\W*profile photo:\s*/i, "").trim();
+      if (parsed) media.profilePhoto = parsed;
       continue;
     }
 
     // ── Project fields ──
-    if (/^year:/i.test(text)) {
-      currentProject.year = text.replace(/^year:\s*/i, "").trim();
+    if (/^\W*year:/i.test(text)) {
+      currentProject.year = text.replace(/^\W*year:\s*/i, "").trim();
       lastField = null;
-    } else if (/^category:/i.test(text)) {
-      currentProject.category = text.replace(/^category:\s*/i, "").trim();
+    } else if (/^\W*category:/i.test(text)) {
+      currentProject.category = text.replace(/^\W*category:\s*/i, "").trim();
       lastField = null;
-    } else if (/^description:/i.test(text)) {
-      const val = text.replace(/^description:\s*/i, "").trim();
+    } else if (/^\W*description:/i.test(text)) {
+      const val = text.replace(/^\W*description:\s*/i, "").trim();
       if (val) {
         currentProject.description = val;
         lastField = null;
       } else {
         lastField = "description";
       }
-    } else if (/^thumbnail:/i.test(text)) {
+    } else if (/^\W*thumbnail:/i.test(text)) {
       const parsed =
         extractUrl(block, "thumbnail") ??
-        text.replace(/^thumbnail:\s*/i, "").trim();
-      if (parsed) currentProject.thumbnail = parsed;
+        text.replace(/^\W*thumbnail:\s*/i, "").trim();
+      if (parsed && parsed.startsWith("http")) currentProject.thumbnail = parsed;
       lastField = parsed ? null : "thumbnail";
-    } else if (/^video:/i.test(text)) {
+    } else if (/^\W*video:/i.test(text)) {
       const parsed =
-        extractUrl(block, "video") ?? text.replace(/^video:\s*/i, "").trim();
-      if (parsed) currentProject.video = parsed;
+        extractUrl(block, "video") ?? text.replace(/^\W*video:\s*/i, "").trim();
+      if (parsed && parsed.startsWith("http")) currentProject.video = parsed;
       lastField = parsed ? null : "video";
-    } else if (/^image(s)?:/i.test(text)) {
+    } else if (/^\W*image(s)?:/i.test(text)) {
       currentProject.images = [];
       const urls = extractUrls(block, "image(s)?");
       currentProject.images.push(...urls);
       lastField = "images";
-    } else if (/^(tech|stack|built with):/i.test(text)) {
-      const val = text.replace(/^(tech|stack|built with):\s*/i, "").trim();
+    } else if (/^\W*(tech|stack|built with):/i.test(text)) {
+      const val = text.replace(/^\W*(tech|stack|built with):\s*/i, "").trim();
       if (val) {
         currentProject.tech = val;
         lastField = null;
       } else {
         lastField = "tech";
       }
-    } else if (/^github:/i.test(text)) {
-      currentProject.github =
-        extractUrl(block, "github") ?? text.replace(/^github:\s*/i, "").trim();
+    } else if (/^\W*github:/i.test(text)) {
+      const parsed =
+        extractUrl(block, "github") ?? text.replace(/^\W*github:\s*/i, "").trim();
+      if (parsed && parsed.startsWith("http")) currentProject.github = parsed;
       lastField = null;
-    } else if (/^live:/i.test(text)) {
-      currentProject.liveUrl =
-        extractUrl(block, "live") ?? text.replace(/^live:\s*/i, "").trim();
+    } else if (/^\W*(live|link):/i.test(text)) {
+      const parsed =
+        extractUrl(block, "live|link") ?? text.replace(/^\W*(live|link):\s*/i, "").trim();
+      if (parsed && parsed.startsWith("http")) currentProject.liveUrl = parsed;
       lastField = null;
     } else if (lastField === "description") {
       currentProject.description = text;

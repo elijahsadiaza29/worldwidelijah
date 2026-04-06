@@ -1,6 +1,8 @@
 import { getPortfolioMedia } from "@/lib/getPortfolioContext";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const force = req.nextUrl.searchParams.get("force") === "true";

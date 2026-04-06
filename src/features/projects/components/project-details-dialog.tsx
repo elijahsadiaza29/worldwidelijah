@@ -24,7 +24,10 @@ export function ProjectDetailsDialog({
 }: ProjectDetailsDialogProps) {
   return (
     <Dialog open={!!project} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl p-0 overflow-hidden border border-none bg-background dark:bg-secondary text-foreground rounded-4xl">
+      <DialogContent 
+        className="sm:max-w-5xl p-0 overflow-hidden border border-none bg-background dark:bg-secondary text-foreground rounded-4xl"
+        initialFocus={false}
+      >
         {project && (
           <ScrollArea className="max-h-[85vh]">
             <div className="flex flex-col px-4 py-8 sm:p-12 gap-10">
@@ -86,6 +89,7 @@ export function ProjectDetailsDialog({
                     <Button
                       variant="outline"
                       className="w-full justify-between items-center h-16 px-8 rounded-2xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-300 group"
+                      nativeButton={false}
                       render={
                         <a
                           href={project.liveUrl}
@@ -104,6 +108,7 @@ export function ProjectDetailsDialog({
                     <Button
                       variant="outline"
                       className="w-full justify-between items-center h-16 px-8 rounded-2xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-300 group"
+                      nativeButton={false}
                       render={
                         <a
                           href={project.github}
@@ -124,7 +129,7 @@ export function ProjectDetailsDialog({
               {/* Media */}
               <div className="flex flex-col gap-4">
                 {project.video && (
-                  <div className="relative aspect-[21/9] w-full overflow-hidden rounded-4xl bg-zinc-900 shadow-2xl border border-border/10">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-4xl bg-zinc-900 shadow-2xl border border-border/10">
                     <video
                       src={project.video}
                       className="absolute inset-0 w-full h-full object-cover"
@@ -140,7 +145,7 @@ export function ProjectDetailsDialog({
                   project.images.map((imgUrl, i) => (
                     <div
                       key={i}
-                      className="relative aspect-[21/9] w-full overflow-hidden rounded-4xl "
+                      className="relative aspect-video w-full overflow-hidden rounded-4xl "
                     >
                       <CloudinaryMedia
                         url={imgUrl}
@@ -153,17 +158,16 @@ export function ProjectDetailsDialog({
 
                 {!project.video &&
                   (!project.images || project.images.length === 0) && (
-                    <div className="relative aspect-[21/9] w-full overflow-hidden rounded-4xl bg-[#0c0c0e] shadow-2xl border border-border/10">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-4xl bg-[#0c0c0e] shadow-2xl border border-border/10">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.3)_0%,transparent_60%)]" />
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(168,85,247,0.25)_0%,transparent_60%)]" />
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.2)_0%,transparent_50%)]" />
                       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/50" />
                     </div>
                   )}
+                </div>
               </div>
-            </div>
-            <ScrollBar />
-          </ScrollArea>
+            </ScrollArea>
         )}
       </DialogContent>
     </Dialog>

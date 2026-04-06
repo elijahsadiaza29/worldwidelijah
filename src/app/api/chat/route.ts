@@ -1,6 +1,8 @@
 import { getPortfolioContext } from "@/lib/getPortfolioContext";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+export const dynamic = "force-dynamic";
+
 // ⚠️ Do NOT use "edge" runtime — Notion SDK needs Node.js
 // export const runtime = "edge";  ← remove this if you have it
 

@@ -109,7 +109,7 @@ export default function ChatContainer() {
     } catch (error) {
       console.error("Chat Error:", error);
       setInputValue(originalInput); // Restore input on failure
-      
+
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessageId
