@@ -1,3 +1,5 @@
+import { useVideoIntersection } from "@/hooks/use-video-intersection";
+
 interface CloudinaryMediaProps {
   url: string;
   type?: "image" | "video";
@@ -11,6 +13,8 @@ export default function CloudinaryMedia({
   alt = "",
   className = "",
 }: CloudinaryMediaProps) {
+  const videoRef = useVideoIntersection();
+
   const isVideo =
     type === "video" ||
     /\.(mp4|webm|ogg)$/i.test(url) ||
@@ -24,10 +28,10 @@ export default function CloudinaryMedia({
   if (isVideo) {
     return (
       <video
+        ref={videoRef}
         src={optimizedUrl}
         className={className}
         controls
-        autoPlay
         muted
         loop
         playsInline

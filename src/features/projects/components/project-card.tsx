@@ -2,6 +2,7 @@
 
 import CloudinaryMedia from "@/components/shared/cloudinary-media";
 import type { ProjectMedia } from "@/lib/getPortfolioContext";
+import { useVideoIntersection } from "@/hooks/use-video-intersection";
 
 interface ProjectCardProps {
   project: ProjectMedia;
@@ -10,6 +11,8 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onClick, width }: ProjectCardProps) {
+  const videoRef = useVideoIntersection();
+
   return (
     <div
       onClick={onClick}
@@ -23,11 +26,11 @@ export function ProjectCard({ project, onClick, width }: ProjectCardProps) {
     >
       {project.video ? (
         <video
+          ref={videoRef}
           src={project.video}
           className="absolute inset-0 w-full h-full object-cover
                      transition-transform duration-700
                      group-hover:scale-110"
-          autoPlay
           muted
           loop
           playsInline

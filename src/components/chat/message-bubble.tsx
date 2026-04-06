@@ -14,6 +14,7 @@ import {
   MessageContent,
 } from "../ui/message";
 
+import { useVideoIntersection } from "@/hooks/use-video-intersection";
 import { ThinkingIndicator } from "./thinking-indicator";
 
 interface MessageBubbleProps {
@@ -87,6 +88,8 @@ export function MessageBubble({
     !isWidget && isString && !isEmpty ? parseContent(contentStr) : null;
   const hasMedia = parts?.some((p) => p.type !== "text");
 
+  const videoRef = useVideoIntersection();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -106,8 +109,9 @@ export function MessageBubble({
         {isAssistant && (
           <div className="hidden sm:block h-12 w-12 shrink-0 rounded-full overflow-hidden">
             <video
+              ref={videoRef}
               src="https://res.cloudinary.com/dlhfnz7ro/video/upload/v1774943790/final_memojis_ix6rvh.webm"
-              autoPlay
+              // autoPlay
               loop
               muted
               playsInline

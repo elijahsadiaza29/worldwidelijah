@@ -92,19 +92,45 @@ export default function ChatContainer() {
 
       let accumulatedContent = "";
       const decoder = new TextDecoder();
+      let isJsonStream = false;
+      let streamEvaluated = false;
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        
+        if (done) {
+          if (isJsonStream) {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMessageId
+                  ? { ...m, content: accumulatedContent }
+                  : m,
+              ),
+            );
+          }
+          break;
+        }
+
         const chunk = decoder.decode(value, { stream: true });
         accumulatedContent += chunk;
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMessageId
-              ? { ...m, content: accumulatedContent }
-              : m,
-          ),
-        );
+
+        if (!streamEvaluated && accumulatedContent.trimStart().length > 0) {
+          const trimmed = accumulatedContent.trimStart();
+          if (trimmed.startsWith("{") || trimmed.startsWith("```")) {
+            isJsonStream = true;
+          }
+          streamEvaluated = true;
+        }
+
+        if (streamEvaluated && !isJsonStream) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessageId
+                ? { ...m, content: accumulatedContent }
+                : m,
+            ),
+          );
+        }
       }
     } catch (error) {
       console.error("Chat Error:", error);

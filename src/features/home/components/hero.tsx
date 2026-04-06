@@ -1,9 +1,12 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { useVideoIntersection } from "@/hooks/use-video-intersection";
 import { MapPin } from "lucide-react";
 
 export default function Hero() {
+  const videoRef = useVideoIntersection();
+
   const skills = [
     "Web Development",
     "IT Support",
@@ -21,8 +24,9 @@ export default function Hero() {
         <div className="w-full md:w-[42%] flex-shrink-0">
           <div className="w-[180px] h-[180px] md:w-[220px] md:h-[220px] rounded-full overflow-hidden">
             <video
+              ref={videoRef}
               src="https://res.cloudinary.com/dlhfnz7ro/video/upload/v1774943790/final_memojis_ix6rvh.webm"
-              autoPlay
+              // autoPlay
               loop
               muted
               playsInline
