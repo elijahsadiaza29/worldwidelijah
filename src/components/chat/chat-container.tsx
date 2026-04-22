@@ -1,6 +1,7 @@
 "use client";
 
 import type { ProjectMedia } from "@/lib/getPortfolioContext";
+import { MessageType } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -8,13 +9,6 @@ import { ChatInput } from "./chat-input";
 import { ChatMessages } from "./chat-messages";
 import { WelcomeScreen } from "./welcome-screen";
 import { useRateLimit } from "@/hooks/use-rate-limit";
-
-type MessageType = {
-  id: string;
-  role: "user" | "assistant";
-  content: string | React.ReactNode;
-  markdown?: boolean;
-};
 
 type LayoutState = "welcome" | "chat";
 
@@ -82,7 +76,7 @@ export default function ChatContainer() {
     const assistantPlaceholder: MessageType = {
       id: assistantMessageId,
       role: "assistant",
-      content: "", // This triggers the ThinkingIndicator
+      content: "",
       markdown: true,
     };
 
@@ -142,9 +136,15 @@ export default function ChatContainer() {
         const chunk = decoder.decode(value, { stream: true });
         accumulatedContent += chunk;
 
-        if (!streamEvaluated && accumulatedContent.trimStart().length > 0) {
+        if (!streamEvaluated && accumulatedContent.length > 5) {
           const trimmed = accumulatedContent.trimStart();
-          if (trimmed.startsWith("{") || trimmed.startsWith("```")) {
+          // Improved detection: Check if it looks like a JSON widget anywhere in the early stream
+          if (
+            trimmed.startsWith("{") || 
+            trimmed.startsWith("```json") || 
+            trimmed.includes('"type": "SHOW_') ||
+            trimmed.includes('"type":"SHOW_')
+          ) {
             isJsonStream = true;
           }
           streamEvaluated = true;
@@ -162,7 +162,7 @@ export default function ChatContainer() {
       }
     } catch (error) {
       console.error("Chat Error:", error);
-      setInputValue(originalInput); // Restore input on failure
+      setInputValue(originalInput); 
 
       setMessages((prev) =>
         prev.map((m) =>

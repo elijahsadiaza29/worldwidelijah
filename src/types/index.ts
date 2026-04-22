@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface Experience {
   company: string;
   role: string;
@@ -21,4 +23,16 @@ export interface Project {
 export interface NavLink {
   label: string;
   href: string;
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant" | "model" | "system";
+  content: string;
+}
+
+export interface MessageType {
+  id: string;
+  role: "user" | "assistant";
+  content: string | React.ReactNode;
+  markdown?: boolean;
 }

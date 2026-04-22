@@ -1,4 +1,5 @@
 import { getPortfolioContext } from "@/lib/getPortfolioContext";
+import { ChatMessage } from "@/types";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
 
     const history = messages
       .slice(0, -1)
-      .map((m: { role: string; content: string }) => ({
+      .map((m: ChatMessage) => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }],
       }));

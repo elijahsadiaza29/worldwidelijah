@@ -135,60 +135,60 @@ export async function getPortfolioMedia(
     if (!currentProject) continue;
 
     // ── Profile photo ──
-    if (/^\W*profile photo:/i.test(text)) {
-      const parsed = extractUrl(block, "profile photo") ??
-        text.replace(/^\W*profile photo:\s*/i, "").trim();
+    if (/^\W*profile\s*photo\s*:/i.test(text)) {
+      const parsed = extractUrl(block, "profile\\s*photo") ??
+        text.replace(/^\W*profile\s*photo\s*:\s*/i, "").trim();
       if (parsed) media.profilePhoto = parsed;
       continue;
     }
 
     // ── Project fields ──
-    if (/^\W*year:/i.test(text)) {
-      currentProject.year = text.replace(/^\W*year:\s*/i, "").trim();
+    if (/^\W*year\s*:/i.test(text)) {
+      currentProject.year = text.replace(/^\W*year\s*:\s*/i, "").trim();
       lastField = null;
-    } else if (/^\W*category:/i.test(text)) {
-      currentProject.category = text.replace(/^\W*category:\s*/i, "").trim();
+    } else if (/^\W*category\s*:/i.test(text)) {
+      currentProject.category = text.replace(/^\W*category\s*:\s*/i, "").trim();
       lastField = null;
-    } else if (/^\W*description:/i.test(text)) {
-      const val = text.replace(/^\W*description:\s*/i, "").trim();
+    } else if (/^\W*description\s*:/i.test(text)) {
+      const val = text.replace(/^\W*description\s*:\s*/i, "").trim();
       if (val) {
         currentProject.description = val;
         lastField = null;
       } else {
         lastField = "description";
       }
-    } else if (/^\W*thumbnail:/i.test(text)) {
+    } else if (/^\W*thumbnail\s*:/i.test(text)) {
       const parsed =
         extractUrl(block, "thumbnail") ??
-        text.replace(/^\W*thumbnail:\s*/i, "").trim();
+        text.replace(/^\W*thumbnail\s*:\s*/i, "").trim();
       if (parsed && parsed.startsWith("http")) currentProject.thumbnail = parsed;
       lastField = parsed ? null : "thumbnail";
-    } else if (/^\W*video:/i.test(text)) {
+    } else if (/^\W*video\s*:/i.test(text)) {
       const parsed =
-        extractUrl(block, "video") ?? text.replace(/^\W*video:\s*/i, "").trim();
+        extractUrl(block, "video") ?? text.replace(/^\W*video\s*:\s*/i, "").trim();
       if (parsed && parsed.startsWith("http")) currentProject.video = parsed;
       lastField = parsed ? null : "video";
-    } else if (/^\W*image(s)?:/i.test(text)) {
+    } else if (/^\W*image(s)?\s*:/i.test(text)) {
       currentProject.images = [];
       const urls = extractUrls(block, "image(s)?");
       currentProject.images.push(...urls);
       lastField = "images";
-    } else if (/^\W*(tech|stack|built with):/i.test(text)) {
-      const val = text.replace(/^\W*(tech|stack|built with):\s*/i, "").trim();
+    } else if (/^\W*(tech|stack|built\s*with)\s*:/i.test(text)) {
+      const val = text.replace(/^\W*(tech|stack|built\s*with)\s*:\s*/i, "").trim();
       if (val) {
         currentProject.tech = val;
         lastField = null;
       } else {
         lastField = "tech";
       }
-    } else if (/^\W*github:/i.test(text)) {
+    } else if (/^\W*github\s*:/i.test(text)) {
       const parsed =
-        extractUrl(block, "github") ?? text.replace(/^\W*github:\s*/i, "").trim();
+        extractUrl(block, "github") ?? text.replace(/^\W*github\s*:\s*/i, "").trim();
       if (parsed && parsed.startsWith("http")) currentProject.github = parsed;
       lastField = null;
-    } else if (/^\W*(live|link):/i.test(text)) {
+    } else if (/^\W*(live|link)\s*:/i.test(text)) {
       const parsed =
-        extractUrl(block, "live|link") ?? text.replace(/^\W*(live|link):\s*/i, "").trim();
+        extractUrl(block, "live|link") ?? text.replace(/^\W*(live|link)\s*:\s*/i, "").trim();
       if (parsed && parsed.startsWith("http")) currentProject.liveUrl = parsed;
       lastField = null;
     } else if (lastField === "description") {

@@ -69,7 +69,7 @@ export function extractUrl(
 
   // Remove the prefix (e.g. "Thumbnail: ")
   const afterPrefix = fullText
-    .replace(new RegExp(`^${prefix}:\\s*`, "i"), "")
+    .replace(new RegExp(`^${prefix}\\s*:\\s*`, "i"), "")
     .trim();
 
   // If Notion auto-linked the URL, grab href from the link object
@@ -126,7 +126,7 @@ export function extractUrls(
 
   // Check plain text for raw URLs separated by whitespace/newlines
   const fullText = richTextArr.map((t) => t.plain_text).join("");
-  const afterPrefix = prefix ? fullText.replace(new RegExp(`^${prefix}:\\s*`, "i"), "").trim() : fullText;
+  const afterPrefix = prefix ? fullText.replace(new RegExp(`^${prefix}\\s*:\\s*`, "i"), "").trim() : fullText;
   
   const rawUrls = afterPrefix.split(/[\s\n]+/).filter(word => word.startsWith("http"));
   for (const rawUrl of rawUrls) {
