@@ -18,7 +18,7 @@ export function ProjectCard({ project, onClick, width }: ProjectCardProps) {
       onClick={onClick}
       className="group relative flex-shrink-0 overflow-hidden rounded-3xl
                    cursor-pointer select-none
-                   transition-shadow duration-300"
+                   transition-shadow duration-300 border"
       style={{
         aspectRatio: "3/4",
         width,

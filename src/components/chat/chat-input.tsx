@@ -116,7 +116,6 @@ export function ChatInput({
         value={inputValue}
         onValueChange={setInputValue}
         onSubmit={() => {
-          if (rateLimit?.isLimited) return;
           onSend(inputValue);
         }}
         className={cn(
@@ -174,7 +173,7 @@ export function ChatInput({
               <Button
                 size="icon"
                 onClick={() => onSend(inputValue)}
-                disabled={!inputValue.trim() || isLoading || rateLimit?.isLimited}
+                disabled={!inputValue.trim() || isLoading}
                 className="size-9 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-opacity"
               >
                 {!isLoading ? (
@@ -227,7 +226,7 @@ export function ChatInput({
               <Button
                 size="icon"
                 onClick={() => onSend(inputValue)}
-                disabled={!inputValue.trim() || isLoading || rateLimit?.isLimited}
+                disabled={!inputValue.trim() || isLoading}
                 className="shrink-0 self-end size-9 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-opacity"
               >
                 {!isLoading ? (

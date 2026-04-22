@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
+const googleSans = localFont({
+  src: [
+    {
+      path: "../assets/Google_Sans/GoogleSans-VariableFont_GRAD,opsz,wght.ttf",
+      style: "normal",
+    },
+    {
+      path: "../assets/Google_Sans/GoogleSans-Italic-VariableFont_GRAD,opsz,wght.ttf",
+      style: "italic",
+    },
+  ],
   variable: "--font-sans",
-  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
@@ -40,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${googleSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <main>{children}</main>
       </body>

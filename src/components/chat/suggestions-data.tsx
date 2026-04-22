@@ -17,7 +17,6 @@ export const SUGGESTION_CATEGORIES = [
     icon: <User size={18} className="text-zinc-700 dark:text-zinc-300" />,
     items: [
       { text: "Who are you?", highlighted: true, icon: <Sparkles size={14} /> },
-      { text: "What are your passions?" },
       { text: "How did you get started in tech?" },
       { text: "Where do you see yourself in 5 years?" },
     ],
@@ -31,7 +30,6 @@ export const SUGGESTION_CATEGORIES = [
         highlighted: true,
         icon: <Sparkles size={14} />,
       },
-      { text: "What makes you a valuable team member?" },
       { text: "Where are you working now?" },
       { text: "Why should I hire you?" },
       { text: "What's your educational background?" },
@@ -66,29 +64,26 @@ export const SUGGESTION_CATEGORIES = [
     icon: <PartyPopper size={18} className="text-zinc-700 dark:text-zinc-300" />,
     items: [
       {
-        text: "Mountain Bike you said?? Show me!",
-        highlighted: true,
-        icon: <Sparkles size={14} />,
-      },
-      {
         text: "What's the craziest thing you've ever done?",
         highlighted: true,
         icon: <Sparkles size={14} />,
       },
-      { text: "Mac or PC?" },
-      { text: "What are you certain about that 90% get wrong?" },
     ],
   },
   {
     category: "Contact & Future",
     icon: <Mail size={18} className="text-zinc-700 dark:text-zinc-300" />,
     items: [
+      // {
+      //   text: "How can I reach you?",
+      //   highlighted: true,
+      //   icon: <Sparkles size={14} />,
+      // },
       {
-        text: "How can I reach you?",
+        text: "What kind of project would make you say 'yes' immediately?",
         highlighted: true,
         icon: <Sparkles size={14} />,
       },
-      { text: "What kind of project would make you say 'yes' immediately?" },
       { text: "Where are you located?" },
     ],
   },
